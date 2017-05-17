@@ -1,0 +1,25 @@
+searchguard:
+  dynamic:
+    authc:
+      basic_internal_auth:
+       enabled: false
+       order: 1
+       http_authenticator:
+         type: basic
+         challenge: true
+       authentication_backend:
+         type: internal
+      kibana_auth_domain:
+        enabled: true
+        order: 0
+        http_authenticator:
+          type: jwt
+          challenge: false
+          config:
+            signing_key: "dGVzdA=="
+            jwt_header: "Authorization"
+            jwt_url_parameter: "jwt"
+            roles_key: "roles"
+            subject_key: null
+        authentication_backend:
+          type: noop
