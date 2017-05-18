@@ -1,0 +1,42 @@
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: $K8S_NAMESPACE
+  name: elasticsearch
+spec:
+  ports:
+  - name: elasticsearch-sg
+    protocol: TCP
+    port: 9200
+    targetPort: 9200
+  selector:
+    name: elasticsearch-sg
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: $K8S_NAMESPACE
+  name: elasticsearch-sg
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+         name: elasticsearch-sg
+    spec:
+      containers:
+      - name: elasticsearch-sg
+        image: michaloo/elasticsearch-sg:new
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9200
+        volumeMounts:
+        - name: elasticsearchdata
+          mountPath: /usr/share/elasticsearch/data
+        - name: elasticsearchconfig
+          mountPath: /usr/share/elasticsearch/config
+      volumes:
+      - name: elasticsearchdata
+        emptyDir: {}
+      - name: elasticsearchconfig
+        emptyDir: {}

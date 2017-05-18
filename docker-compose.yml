@@ -1,27 +1,38 @@
 version: '2'
 services:
     elasticsearch:
-        image: khezen/elasticsearch:5
-        volumes:
+        image: hull/elasticsearch-sg
+        # volumes:
             # - /data/elasticsearch:/usr/share/elasticsearch/data
-            - /data-etc/elasticsearch:/usr/share/elasticsearch/config
-            - ./etc/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-            - ./etc/sg_config.yml:/usr/share/elasticsearch/config/searchguard/sg_config.yml
+            # - /data-etc/elasticsearch:/usr/share/elasticsearch/config
+            # - ./etc/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+            # - ./etc/sg_config.yml:/usr/share/elasticsearch/config/searchguard/sg_config.yml
+            # - ./etc/sg_roles.yml:/usr/share/elasticsearch/config/searchguard/sg_roles.yml
+            # - ./install-deps.sh:/usr/share/elasticsearch/install-deps.sh
         ports:
             - "9200:9200"
             - "9300:9300"
-        # user: "elasticsearch:elasticsearch"
         network_mode: bridge
         restart: always
+        environment:
+            KIBANA_PWD: kibana
+            ELASTIC_PWD: elastic
+            LOG_KIBANA_SECRET: 123123
     kibana:
-        image: khezen/kibana
+        image: hull/kibana-sg
+        build:
+          context: .
+          dockerfile: Dockerfile.kibana
         ports:
             - "5601:5601"
         network_mode: bridge
         restart: always
-        volumes:
-            - /data-etc/kibana:/etc/kibana
-            - ./etc/kibana/kibana.yml:/etc/kibana/kibana.yml
-            - /data-etc/elasticsearch/searchguard/ssl/ca/root-ca.pem:/etc/elasticsearch/searchguard/ssl/ca/root-ca.pem
+        environment:
+            KIBANA_PWD: kibana
+            SG_COOKIE_PASS: 835b805d7a35a79135a6f3a3a6778f9f
+        # volumes:
+        #     - /data-etc/kibana:/etc/kibana
+        #     - ./etc/kibana/kibana.yml:/etc/kibana/kibana.yml
+            # - /data-etc/elasticsearch/searchguard/ssl/ca/root-ca.pem:/etc/elasticsearch/searchguard/ssl/ca/root-ca.pem
         links:
             - elasticsearch

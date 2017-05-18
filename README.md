@@ -2,12 +2,10 @@
 
 1. start ES: `docker-compose up -d elasticsearch`
 
-2. install JWT dependency: `bash install-jwt.sh`
+2. start kibana and ES: `docker-composer up kibana`
 
-3. restart ES: `docker-compose restart elasticsearch`
+3. ES available at http://localhost:9200/
 
-4. start kibana and ES: `docker-composer up kibana`
+4. kibana available at http://localhost:5601/
 
-5. ES available at https://localhost:9200/
-
-6. kibana available at http://localhost:5601/
+To see logs: `docker-compose logs -f elasticsearch`

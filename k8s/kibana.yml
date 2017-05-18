@@ -1,0 +1,32 @@
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: $K8S_NAMESPACE
+  name: kibana
+spec:
+  ports:
+  - name: kibana-sg
+    protocol: TCP
+    port: 5601
+    targetPort: 5601
+  selector:
+    name: kibana-sg
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: $K8S_NAMESPACE
+  name: kibana-sg
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+         name: kibana-sg
+    spec:
+      containers:
+      - name: kibana-sg
+        image: michaloo/kibana-sg:new4
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5601
